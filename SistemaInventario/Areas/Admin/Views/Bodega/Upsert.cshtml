@@ -1,0 +1,106 @@
+﻿@model SistemaInventario.Modelos.Bodega
+@{
+    ViewData["Title"] = "Upsert";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear Bodega";
+}
+
+<!--Crear el Formulario para envio de información-->
+<form method="post">
+    <div style="padding-left:15%;padding-right:15%;padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger">
+            </div>
+        </div>
+        <!--Validadcion del id con C# para cambiar el titulo-->
+        @if(Model.Id != 0)
+        {
+            titulo = "Actualizar Bodega";
+            <input type="hidden" asp-for="Id" id="id"/>
+        }
+        <!--Mostramos el Titulo-->
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+
+        <!--Creamos el Div del Nombre-->
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <input type="text" asp-for="Nombre" class="form-control" placeholder="Nombre de la Bodega" id="nombre"/>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!--Creamos el Div de la Descripcion-->
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Descripción</label>
+                <input type="text" asp-for="Descripcion" class="form-control" placeholder="Descripción de la Bodega" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!--Creamos el Div para el Estado-->
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Estado</label>
+                
+                <select asp-for="Estado" class="form-select">
+                    <option value="true">Activo</option>
+                    <option value="false">Inactivo</option>
+                </select>
+                
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!--Mostramos la vista parcial requerida-->
+        <br />
+        <div>
+            @if(Model.Id != 0)
+            {
+                <partial name="_BotonesActualizarYRegresar" model="Model.Id"/>
+            }else{
+                <partial name="_BotonesCrearYRegresar"/>
+            }
+        </div>
+
+    </div>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+
+    <script type="text/javascript">
+        //verificacion de enter
+       
+        $(document).ready(function () {
+            $('form').on('keypress', function (e) {
+                return e.key ! == 'Enter' : 
+            });
+        });
+        document.getElementById("nombre").addEventListener('change', function () {
+            ValidarNombre();
+        });
+
+        function ValidarNombre(){
+            var url = '@Url.Content("~/")' + "Admin/Bodega/ValidarNombre";
+            var id = '#id';
+            var nombre = '#nombre';
+
+            $.getJSON(url, { id: $(id).val(), nombre: $(nombre).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var nombre = document.getElementById("nombre");
+                        swal("E R R O R", "El Nombre ya Existe", "error");
+                        nombre.value = "";
+                    }
+                });
+            });
+        }
+    </script>
+}
+
+
