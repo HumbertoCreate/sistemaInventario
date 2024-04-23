@@ -6,7 +6,7 @@
 }
 
 <!--Crear el Formulario para envio de información-->
-<form method="post">
+<form method="post" onkeypress="if(event.keyCode == 13) event.returnValue = false;>
     <div style="padding-left:15%;padding-right:15%;padding-bottom:inherit.4rem;">
         <div class="row border-0">
             <div asp-validation-summary="ModelOnly" class="text-danger">
@@ -75,12 +75,6 @@
 
     <script type="text/javascript">
         //verificacion de enter
-       
-        $(document).ready(function () {
-            $('form').on('keypress', function (e) {
-                return e.key ! == 'Enter' : 
-            });
-        });
         document.getElementById("nombre").addEventListener('change', function () {
             ValidarNombre();
         });
